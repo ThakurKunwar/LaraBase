@@ -27,6 +27,10 @@ class BaseRepository
     //for relationship
     protected $relationships = []; //empty by default
 
+    //for pagination
+    public int $perPage = 5;
+    protected string $orderField = 'created_at';
+    protected string $orderDirection = 'desc';
 
 
     public function __construct()
@@ -66,7 +70,12 @@ class BaseRepository
         return $this->modelKey . '.' . $id;
         //product.1
     }
-
+    //for pagination
+    public function setPerPage(int $perPage): self
+    {
+        $this->perPage = $perPage;
+        return $this;
+    }
     //relationship method
     public function with(array $relationships): self
     {
@@ -122,6 +131,8 @@ class BaseRepository
         return $result;
     }
 
+
+
     public function all(array $queryParams = [])
     {
         $cacheKey = $this->getCacheKey('all');
@@ -139,6 +150,16 @@ class BaseRepository
             Cache::forget($cacheKey);
         }
         return $result;
+    }
+    public function index(array $queryParams = [])
+    {
+
+        $collection = $this->prepareModel($queryParams)
+            ->orderBy($this->orderField, $this->orderDirection);
+
+        return $this->perPage
+            ? $collection->paginate($this->perPage)
+            : $collection->get();
     }
 
     public function create(array $data, ?callable $callback = null)
