@@ -4,9 +4,8 @@ namespace App\Livewire;
 
 use App\Http\Repositories\ProductRepository;
 use App\Livewire\PowerGrid\PowerGridComponent;
-use App\Models\Product;
+use Illuminate\View\View;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use PowerComponents\LivewirePowerGrid\Column;
 use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridFields;
@@ -14,6 +13,7 @@ use PowerComponents\LivewirePowerGrid\PowerGridFields;
 final class ProductTable extends PowerGridComponent
 {
     public string $tableName = 'product-table';
+    public string $primaryKey = 'id';
 
     public function __construct()
     {
@@ -23,7 +23,7 @@ final class ProductTable extends PowerGridComponent
     // in ProductTable
     public function datasource(): Builder
     {
-        return $this->repository->with(['category'])->prepareModel();
+        return $this->repository->prepareModel()->with(['category']);
     }
 
     public function fields(): PowerGridFields
@@ -34,14 +34,17 @@ final class ProductTable extends PowerGridComponent
             ->add('price')
             ->add('category_name', fn($product) =>
             $product->category?->name)
-            ->add('created_at');
+            ->add(
+                'created_at_formatted',
+                fn($product) =>
+                $product->created_at->format('d M Y')
+            );
     }
 
     public function columns(): array
     {
         return [
             Column::make('ID', 'id')
-                ->searchable()
                 ->sortable(),
 
             Column::make('Name', 'name')
@@ -51,14 +54,17 @@ final class ProductTable extends PowerGridComponent
             Column::make('Price', 'price')
                 ->sortable(),
             Column::make('Category', 'category_name'),
-            Column::make('Created at', 'created_at_formatted', 'created_at')
-                ->searchable(),
-
+            Column::make('Created at', 'created_at_formatted', 'created_at'),
             Column::action('Action')
         ];
     }
 
-    public function actions(Model $row): array
+    public function actionsFromView($row): View
+    {
+        return view('components.actions', ['row' => $row, 'repository' => $this->repository]);
+    }
+
+    public function actions($row): array
     {
 
         return [
@@ -66,6 +72,8 @@ final class ProductTable extends PowerGridComponent
             $this->deleteButton($row),
         ];
     }
+
+
 
     /*
     public function actionRules(Product $row): array

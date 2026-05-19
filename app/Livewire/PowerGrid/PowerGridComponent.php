@@ -4,8 +4,8 @@ namespace App\Livewire\PowerGrid;
 
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use PowerComponents\LivewirePowerGrid\Button;
+use Livewire\Attributes\On;
 use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent as BasePowerGridPowerGridComponent;
 
@@ -15,41 +15,44 @@ class PowerGridComponent extends BasePowerGridPowerGridComponent
 
     public function setUp(): array
     {
-        $this->showCheckbox();
 
+        $this->showCheckbox();
         return [
             PowerGrid::header()->showSearchInput(),
             PowerGrid::footer()->showPerPage()
                 ->showRecordCount(),
+
+
         ];
     }
+
     public function datasource(): Builder
     {
         return $this->repository->prepareModel();
     }
 
-    public function editButton(Model $row): Button
+    public function editButton($row, string $field = 'id'): Button
     {
         return Button::add('edit')
             ->slot('Edit')
             ->id()
             ->route(
                 $this->repository->modelNames . '.edit',
-                [$this->repository->modelKey => $row->id],
-                '_self'  // ← add this
+                [$this->repository->modelKey => $row->{$field}],
+                '_self'
             );
     }
 
-    public function deleteButton(Model $row): Button
+    public function deleteButton($row, string $field = 'id'): Button
     {
         return Button::add('delete')
             ->slot('Delete')
             ->id()
             ->class('text-red-600')
-            ->dispatch('deleteConfirm', ['rowId' => $row->id]);
+            ->dispatch('deleteConfirm', ['rowId' => $row->{$field}]);
     }
 
-    #[\Livewire\Attributes\On('deleteConfirm')]
+    #[On('deleteConfirm')]
     public function deleteConfirm($rowId): void
     {
         try {
