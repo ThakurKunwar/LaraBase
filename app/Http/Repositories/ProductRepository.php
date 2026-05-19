@@ -10,9 +10,9 @@ class ProductRepository extends BaseRepository
 
 
 
-    public function __construct(Product $prod)
+    public function __construct()
     {
-        $this->model = $prod;
+        $this->model = new Product();
         parent::__construct();
     }
 }

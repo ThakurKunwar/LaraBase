@@ -22,7 +22,7 @@ class BaseRepository
     protected $baseName;
     public $modelName;
     public $modelNames;
-    protected $modelKey;
+    public $modelKey;
 
     //for relationship
     protected $relationships = []; //empty by default
