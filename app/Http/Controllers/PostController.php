@@ -47,4 +47,13 @@ class PostController extends BaseController
         }
         return $resource;
     }
+
+    #[Override]
+    public function deleteCallBack(Model $resource)
+    {
+        if ($resource->media) {
+            MediaService::deleteMedia($resource->media->id);
+        }
+        return $resource;
+    }
 }

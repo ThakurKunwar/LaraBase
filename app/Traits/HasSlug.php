@@ -13,6 +13,12 @@ trait HasSlug
                 $model->slug = static::slugGeneration($model->{static::getSlug()});
             }
         });
+
+        static::updating(function ($model) {
+            if (empty($model->slug)) {
+                $model->slug = static::slugGeneration($model->{static::getSlug()});
+            }
+        });
     }
 
     public static function getSlug(): string

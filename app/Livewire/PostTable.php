@@ -27,10 +27,15 @@ final class PostTable extends PowerGridComponent
             ->add('title')
             ->add('slug')
             ->add('body')
-            ->add('image', fn($post) => $post->media
-                ? Blade::render('<img src="' . ($post->media->full_url) . '" width="50">')
-                : 'No image')  // comma here is fine, but you have -> after it
-            ->add('is_published')  // this line is the problem — remove the comma before it
+            ->add(
+                'image',
+                fn($post) => $post->media
+                    ? Blade::render(
+                        '<img src="{{ $url }}" width="50">',
+                        ['url' => $post->media->full_url]
+                    )
+                    : 'No image'
+            )
             ->add('is_published')
         ;
     }
@@ -48,7 +53,16 @@ final class PostTable extends PowerGridComponent
                 Column::action('Action'),
             ];
     }
+    #[Override]
+    public function actions(Model $row): array
+    {
 
+        return
+            [
+                $this->editButton($row),
+                $this->deleteButton($row),
+            ];
+    }
     #[Override]
     public function filters(): array
     {

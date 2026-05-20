@@ -17,7 +17,7 @@ class PowerGridComponent extends BasePowerGridPowerGridComponent
     public function setUp(): array
     {
 
-        $this->showCheckBox();
+        $this->showCheckbox();
         return [
             PowerGrid::header()->showSearchInput(),
             PowerGrid::footer()->showPerPage()
@@ -32,22 +32,28 @@ class PowerGridComponent extends BasePowerGridPowerGridComponent
         return $this->repository->prepareModel();
     }
 
-    public function editButton(Model $row, string $field = 'id'): Button
+    public function editButton($row, string $field = 'id'): Button
     {
         return Button::add('edit')
-            ->slot('edit')
-            ->route("{$this->repository->modelNames}.edit", [$this->repository->modelKey => $row->{$field}])
+            ->slot('Edit')
             ->id()
-            ->class('action-btn action-sm btn-info');
+            ->route(
+                $this->repository->modelNames . '.edit',
+                [$this->repository->modelKey => $row->{$field}],
+                '_self'
+            );
     }
 
-    public function deleteButton(Model $row, string $field = 'id'): Button
+    public function deleteButton($row, string $field = 'id'): Button
     {
         return Button::add('delete')
             ->slot('Delete')
+            ->id()
             ->class('text-red-600')
             ->dispatch('deleteConfirm', ['rowId' => $row->{$field}]);
     }
+
+
 
     #[On('deleteConfirm')]
     public function deleteConfirm($rowId): void
