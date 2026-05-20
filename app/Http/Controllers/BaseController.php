@@ -55,7 +55,6 @@ class BaseController
 
     public function show($id)
     {
-
         return view($this->fileRoute . '.show', [
             $this->resource => $this->repository->find($id)
         ]);
@@ -95,7 +94,7 @@ class BaseController
     }
     public function updateCallBack(Model $resource, FormRequest $request)
     {
-        return $resource;
+        return self::storeCallBack($resource, $request);
     }
     public function deleteCallBack(Model $resource)
     {

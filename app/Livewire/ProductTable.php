@@ -4,9 +4,12 @@ namespace App\Livewire;
 
 use App\Http\Repositories\ProductRepository;
 use App\Livewire\PowerGrid\PowerGridComponent;
-use Illuminate\View\View;
+use App\Models\Category;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\View\View;
+use Override;
 use PowerComponents\LivewirePowerGrid\Column;
+use PowerComponents\LivewirePowerGrid\Facades\Filter;
 use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridFields;
 
@@ -32,6 +35,7 @@ final class ProductTable extends PowerGridComponent
             ->add('id')
             ->add('name')
             ->add('price')
+            ->add('category_id')
             ->add('category_name', fn($product) =>
             $product->category?->name)
             ->add(
@@ -71,6 +75,19 @@ final class ProductTable extends PowerGridComponent
             $this->editButton($row),
             $this->deleteButton($row),
         ];
+    }
+
+
+    public function filters(): array
+    {
+        return
+            [
+                Filter::select('category_name', 'category_id')
+                    ->dataSource(Category::all())
+                    ->optionLabel('name')
+                    ->optionValue('id')
+
+            ];
     }
 
 

@@ -6,7 +6,7 @@ use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class CategoryRequest extends FormRequest
+class BrandRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,8 +25,15 @@ class CategoryRequest extends FormRequest
     {
         return [
             'name' => ['required'],
-            'slug' => ['nullable', Rule::unique('categories', 'slug')->ignore($this->route('category'))],
+            'slug' => ['nullable', Rule::unique('brands', 'slug')->ignore($this->route('brand'))],
+            'country' => ['required'],
+            'is_active' => ['boolean'],
         ];
     }
-    public function messages() {}
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'is_active' => $this->boolean('is_active')
+        ]);
+    }
 }

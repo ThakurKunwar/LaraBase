@@ -4,19 +4,20 @@ namespace App\Livewire\PowerGrid;
 
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
-use PowerComponents\LivewirePowerGrid\Button;
+use Illuminate\Database\Eloquent\Model;
 use Livewire\Attributes\On;
+use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent as BasePowerGridPowerGridComponent;
 
 class PowerGridComponent extends BasePowerGridPowerGridComponent
 {
-    protected $repository;
+    protected  $repository;
 
     public function setUp(): array
     {
 
-        $this->showCheckbox();
+        $this->showCheckBox();
         return [
             PowerGrid::header()->showSearchInput(),
             PowerGrid::footer()->showPerPage()
@@ -31,23 +32,19 @@ class PowerGridComponent extends BasePowerGridPowerGridComponent
         return $this->repository->prepareModel();
     }
 
-    public function editButton($row, string $field = 'id'): Button
+    public function editButton(Model $row, string $field = 'id'): Button
     {
         return Button::add('edit')
-            ->slot('Edit')
+            ->slot('edit')
+            ->route("{$this->repository->modelNames}.edit", [$this->repository->modelKey => $row->{$field}])
             ->id()
-            ->route(
-                $this->repository->modelNames . '.edit',
-                [$this->repository->modelKey => $row->{$field}],
-                '_self'
-            );
+            ->class('action-btn action-sm btn-info');
     }
 
-    public function deleteButton($row, string $field = 'id'): Button
+    public function deleteButton(Model $row, string $field = 'id'): Button
     {
         return Button::add('delete')
             ->slot('Delete')
-            ->id()
             ->class('text-red-600')
             ->dispatch('deleteConfirm', ['rowId' => $row->{$field}]);
     }
@@ -62,5 +59,12 @@ class PowerGridComponent extends BasePowerGridPowerGridComponent
             $this->dispatch('error', message: $e->getMessage());
             return;
         }
+    }
+    public function actions(Model $row): array
+    {
+        return [
+            $this->editButton($row),
+            $this->deleteButton($row),
+        ];
     }
 }

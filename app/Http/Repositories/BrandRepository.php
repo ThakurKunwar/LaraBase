@@ -2,21 +2,16 @@
 
 namespace App\Http\Repositories;
 
-use App\Http\Requests\CategoryRequest;
-use App\Models\Category;
+use App\Models\Brand;
 
-class CategoryRepository extends BaseRepository
+class BrandRepository extends BaseRepository
 {
     /**
      * Create a new class instance.
      */
-
-
-
     public function __construct()
     {
-        //
-        $this->model = new Category();
+        $this->model = new Brand();
         parent::__construct();
     }
 }

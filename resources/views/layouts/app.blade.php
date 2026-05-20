@@ -7,10 +7,11 @@
     <script src="https://cdn.tailwindcss.com"></script>
     @livewireStyles
 </head>
-<body>
-
-    @yield('content')
-
-    @livewireScripts
+<body class="bg-gray-100 min-h-screen">
+    <div class="max-w-7xl mx-auto p-8">
+        @yield('content')
+        @livewireScripts
+        @stack('scripts')
+    </div>
 </body>
 </html>

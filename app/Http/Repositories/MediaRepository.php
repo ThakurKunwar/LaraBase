@@ -2,21 +2,17 @@
 
 namespace App\Http\Repositories;
 
-use App\Http\Requests\CategoryRequest;
-use App\Models\Category;
+use App\Models\Media;
 
-class CategoryRepository extends BaseRepository
+class MediaRepository extends BaseRepository
 {
     /**
      * Create a new class instance.
      */
-
-
-
     public function __construct()
     {
         //
-        $this->model = new Category();
+        $this->model = new Media();
         parent::__construct();
     }
 }

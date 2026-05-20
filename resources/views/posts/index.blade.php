@@ -1,5 +1,5 @@
 @extends('layouts.app')
 
 @section('content')
-    <livewire:category-table />
+    <livewire:post-table />
 @endsection
